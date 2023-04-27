@@ -1,0 +1,30 @@
+2004 2023
+1708
+old code for checking user/pw (based on array)
+
+app.post("/logincheck", urlencodedParser, async (req, res) => {
+   let username = req.body.fullname;
+   let userpw = req.body.password;
+   for (users in userDataForPasswordTest)
+   if (username in userDataForPasswordTest) {
+     if (await bcrypt.compare(userpw, userDataForPasswordTest[username][userpw])) {
+      return res.send(`your PW OK, welcome`, username);
+       } else {
+     return res.send("user or PW not OK");
+        }
+    } else {
+        return res.send("USER or pw not OK");
+    }
+})
+
+--
+--
+
+2004 2023
+1711
+bcrypt tjekking
+
+userDataForPasswordTest.user1.hashedPW = await bcrypt.hash(userDataForPasswordTest.user1.password, 12);
+
+--
+--

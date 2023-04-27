@@ -1,0 +1,260 @@
+1804 2023
+npm init
+express
+nodemon (updated)
+app get, app listen
+
+OK, grundlæggende. Now for all the hard stuff.
+
+1255
+setting up the basic html, and public folder structure for express.
+
+1316
+util folder for templateEngine
+
+1507
+made login form (no functionality yet)
+
+1719
+added error-handling to app.listen call of app.js (i THINK so ... i dont know what it would do and i dont know how to cause an error)
+
+1904 2023
+1120
+seems i need some middleware to populate the body of the request, in order for me ot get the username
+
+can also use js to fetch the data to a post url
+
+1147
+ill try using body-parser for getting the form data, so the user can enter their password etc 
+
+import bodyparser
+const bodyparser =
+etc
+
+1157
+finally got the username from the form.
+and the password
+now for some security
+
+1344
+installed bcrypt
+
+1358
+alright, now it checks the submitted password.
+it should probably look up a user first, tho.
+
+1427
+ive made a object w user and pw, and i add the hashed pw to it. for testing.
+
+
+2004 2023
+1705
+OK, i got a basic grasp of MongoDB now.
+
+npm i mongodb'd it
+
+2504 2023
+0121
+i have used urlencodedparser but im starting to think i just should stick to expressjson()
+
+1751
+yeah urlendc wasnt needed.
+working on getting the new user into the mongodb now.
+
+1816
+im having trouble with mongodb -- ill try ot make a function that takes it from the beginning. 
+
+1840
+not doing that main function anyway. gonna do it inline in the route
+
+1843
+it works,  yesss yeah! user and hashedPW in  the house! in the db, that is.
+
+2704 2023
+0234
+the routes fall through. cant send more than one header, eh. thats the thing about the setting headers. it means the thing is trying to send more than one res.send --- bereak w return, eh.
+
+0256
+im messing w the Post new user route, giving it error codes and trying to see how it might break. i think... i made it so if the db isnt online, the app cant start at all. ill have to test it.
+
+0258
+confirm: if i turn off db service, i cannot access server.
+
+0304
+it was the order of the instantiations of mongodb. i sorted the try-catch to handle it.
+now the server doesnt crash when theres no db, yay.
+
+0307
+when running the server now i get a strange error: reference error: collection is not defined.
+obv "collection" is my name for a part of mongodbs internal machinery. i think  a collection is what they use to store search results.
+anyway ... i think it might be because i had the db turned off when i started the server.
+anyway -- i was testing the password/username entry box.
+
+0609
+i think maybe the problem is ethe express route expects json and is getting text. ive tried adding a expressusetetx() call as middleware for the route
+see, it confused me that the post form of html didnt work, but the postman (which used json) did!
+im aware i coulda used express.validator for this (and the error trycatch ive made)
+
+0615
+now its giving me a new error -- rangeerror maximum call stack size exceeded, in route .... somethingsomething framework
+now im getting an entirely new error ive never seen this before.
+here:
+[nodemon] restarting due to changes...
+[nodemon] starting `node app.js`
+mongodb connection established, from app.js
+Server running on port 8080
+
+<--- Last few GCs --->
+
+[4052:000001FDB11FEDF0]    88761 ms: Scavenge 17.0 (18.1) -> 16.7 (18.1) MB, 4.2 / 0.0 ms  (average mu = 0.999, current mu = 0.988) allocation failure;
+
+
+<--- JS stacktrace --->
+
+FATAL ERROR: RegExpCompiler Allocation failed - process out of memory
+ 1: 00007FF73095012F node_api_throw_syntax_error+175407
+ 2: 00007FF7308D5AF6 SSL_get_quiet_shutdown+63110
+ 3: 00007FF7308D6EB2 SSL_get_quiet_shutdown+68162
+ 4: 00007FF73136FF24 v8::Isolate::ReportExternalAllocationLimitReached+116
+ 5: 00007FF73135B282 v8::Isolate::Exit+674
+ 6: 00007FF73135B2BC v8::internal::FatalProcessOutOfMemory+12
+ 7: 00007FF730F20441 v8::internal::DynamicBitSet::Get+8145
+ 8: 00007FF730F2651C v8::internal::CharacterRange::IsCanonical+6700
+ 9: 00007FF730F26FB2 v8::internal::CharacterRange::IsCanonical+9410
+10: 00007FF730F1F9E2 v8::internal::DynamicBitSet::Get+5490
+11: 00007FF730F023BB v8::PropertyDescriptor::value+5595
+12: 00007FF730F02ABC v8::internal::RegExp::CompileForTesting+764
+13: 00007FF730F030A8 v8::internal::RegExp::DotPrintForTesting+248
+14: 00007FF730F0412B v8::internal::RegExp::ExperimentalOneshotExec+2795
+15: 00007FF730F03C3D v8::internal::RegExp::ExperimentalOneshotExec+1533
+16: 00007FF730F03588 v8::internal::RegExp::Exec+216
+17: 00007FF730EE1472 v8::internal::DeclarationScope::was_lazily_parsed+22978
+18: 00007FF73140D5C1 v8::internal::SetupIsolateDelegate::SetupHeap+558193
+19: 00007FF731464462 v8::internal::SetupIsolateDelegate::SetupHeap+914194
+20: 00007FF731464907 v8::internal::SetupIsolateDelegate::SetupHeap+915383
+21: 00007FF6B15F9F17
+[nodemon] app crashed - waiting for file changes before starting...
+
+----
+that was from a consolelog text ("..blabla") and newUser, from the req.body from html page
+--> without the text, it gives me the max call stack size exceeded eror from before.
+
+0623
+i tried replacing json() w text() in expressuse 
+---> same result
+
+0630
+some light googling reveals you can chain ... something? middleware calls? i vaugely recall this from class, but, i mustve missed THAT part of it
+ah well. the drums go.
+
+0634
+i wrote a small middleware that prints the name of req.body.fullname 
+its from https://stackoverflow.com/questions/31928417/chaining-multiple-pieces-of-middleware-for-specific-route-in-expressjs
+
+0635
+reminder to self: res.send() does nOT behave the same as console.log.
+
+0643
+ive read that app.use(express.urlencoded({ extended: true })); is deprecated
+and i seem to have the problem that SOME of my input is in json and other is in text.
+i guess thatsa  multiple route problem, but that seems like an excessive solution.
+--> if i paste app.use(express.urlencoded({ extended: true })); in as middleware, i get the same max call stack eror again.
+
+0648
+i think i made some progress. now i can see the thing. it turns out you CAN have express.urlencoded(etc) as middleware.
+
+0651 
+turns out i forgot a } 
+
+0652
+ok now it goes through but its still undefined in the insert.
+
+0701
+... .... ive been testing on the same html without refreshing it
+0x0f
+
+0703
+it tricks me,tho -- i have a html form w two fields: name n password. for the name, the express route takes the field named "name"--
+but for the pw, express takes the field named "id". what gives? is it a dumbass safety catch?
+also these things are case sensitive
+
+0706
+still need to trim it etc. input validation
+
+0708 
+aaaand we're in. post now works.
+
+1720
+tryna get all the info i have in the mongodb -- coz i gotta CHECK if the user name exists, see?
+im having some trouble deciphering the DDL, i think ... how to get all the results? It says it returns a cursor ... so how do i progrss?
+
+1729
+npm's mongodb page shows it.
+const findresult = await coll.find({}).toArray();
+
+1733
+gets me all the db items: 
+app.get("/all", async (req, res) => { 
+    const coll = await collection.find({}).toArray();
+    res.send({data: coll})
+})
+
+1822
+now that i have som db access i need to define separate routes for login and new user signup (obv you cant do both)
+2 states: logged in or not
+3 actions: log in, create new user or not log in.
+create new and log in should both be displayed.
+
+1830
+in probably the ugliest html ive ever made, i just copied the new user signup and have it as log in. changed some fields
+what can possibly go wrong???
+youfool.jpg
+
+1834
+i forgot the express urlencoded middleware. testing login fucntion
+
+1837
+maybe "name" in the coll.({thnig}) needs tobe in quotes? 
+--> nope, no difference
+
+1841
+i think its because i forgot about await!
+--> bingo! jesus ...
+
+1908
+but it gets me ALL the data of one user (incl password) -- not good.
+mongo has a projection option as a parameter
+
+1918
+i suppose its not a big deal that the db sends the pw to the server... but it sitll bothers me.
+
+1935
+finally got it -- turns out you gotta pass an object, and THAT OBJECT has a field "projection", which then HAS AN OBJECT with the projections in it.
+
+2229
+im trying to get bcrypt to compare, so i can authorize a user.
+when i try to log in, it crashed w error: data and hash arguments required.
+
+2230
+its also still intermittently giving me that maxlisteners exceeindgwarning. im starting to worry.
+
+2233 on a hunnch i consolelogd the pw from the post form ,turns it out was undefined. prolly i forgot the middleware
+
+2234
+adding a toarray at the coll call didnt help
+
+2239
+on a hunch, changed the labels of the forms in html (since i copied them, there might be an errant id somewhere)
+i checked the earlier password formr -- it DOES work. signup works -- so why doenst login?
+
+2244 
+i tried hardocding the pw ... and it STILL givesme the same erorr.so not only dont i have a pw, i cant compare it either.
+perfect
+
+2246
+it occurs to me i mightve jsut used an api. i guess... i dont know how to do it. i do, but... eh.
+hm.
+
+2313 
+i want to set a new git account ... but since my old git acc creds are stored on the path (or something), im having unf trying to push to ANOTHER remote.
+i want to like git.

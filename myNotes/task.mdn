@@ -1,0 +1,34 @@
+Mandatory II
+
+Create a fullstack auth system using a web framework. 
+
+Hand-in: Git Link, Fronter
+Assignment type: Individual
+Recommended: Try to hack each other’s local system for security auditing and do code reviews of the security sensitive parts. 
+
+Deadline: April 27th 
+
+
+Technical requirements:
+Use a web framework. 
+Use a database.
+Email should be sent out with Nodemailer. This can be done through sign up/forgot password/contact us. Only 1 email is required but all the requirements would be nice. 
+Add notifications. At least one. You could use this library: https://github.com/CodeSeven/toastr
+Backend:
+You need to implement authentication:
+Implement it yourself with Bcrypt, route etc. You could consider a library or a service such as Passport.js, Google SSO, OAuth or Firebase Authenticate. 
+You need to implement authorization. 
+Use sessions (easy), JWT (difficult).
+Good video on how to implement JWT with Express: https://www.youtube.com/watch?v=mbsmsi7l3r4
+Frontend: 
+You need to implement authentication too:
+The minimum requirement is a Login/Sign out component. (Sign up/Forgot password are optional). 
+
+You need to implement authorization here too: 
+Protect your routes. If you are using svelte-navigator use private routes so people can’t access pages by changing the URL. You could use this:
+https://github.com/mefechoel/svelte-navigator/tree/main/example/private-routes
+
+
+Bonus
+Feel free to add a theme to the website, a frontpage and content once logged in. 
+
